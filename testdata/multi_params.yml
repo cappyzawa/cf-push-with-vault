@@ -1,0 +1,9 @@
+---
+applications:
+- name: APP-ONE
+  path: ./APP-ONE-DIRECTORY
+- name: APP-TWO
+  path: ./APP-TWO-DIRECTORY
+  env:
+    KEY1: ((value1))
+    KEY2: ((value2))
