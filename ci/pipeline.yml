@@ -1,0 +1,52 @@
+---
+resource_types:
+  - name: pull-request
+    type: docker-image
+    source:
+      repository: teliaoss/github-pr-resource
+
+resources:
+  - name: pr
+    type: pull-request
+    webhook_token: ((webhook-token))
+    source:
+      repository: cappyzawa/cf-push-with-vault
+      access_token: ((github-access-token))
+  - name: repo
+    type: git
+    webhook_token: ((webhook-token))
+    source:
+      uri: https://github.com/cappyzawa/cf-push-with-vault
+jobs:
+  - name: test-pr
+    build_logs_to_retain: 10
+    plan:
+      - get: pr
+        resource: pr
+        trigger: true
+      - put: pr
+        params:
+          path: pr
+          status: pending
+      - task: unit-test
+        file: pr/ci/tasks/unit-test.yml
+        input_mapping:
+          repo: pr
+        on_success:
+          put: pr
+          params:
+            path: pr
+            status: success
+        on_failure:
+          put: pr
+          params:
+            path: pr
+            status: failure
+
+  - name: test-master
+    build_logs_to_retain: 10
+    plan:
+      - get: repo
+        trigger: true
+      - task: unit-test
+        file: repo/ci/tasks/unit-test.yml

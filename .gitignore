@@ -48,3 +48,6 @@ testdata/*.tmp
 
 # dists
 dist/*
+
+# ci
+ci/creds.yml

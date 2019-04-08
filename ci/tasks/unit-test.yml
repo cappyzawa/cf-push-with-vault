@@ -1,0 +1,21 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: golang
+    tag: 1.11.4
+
+inputs:
+  - name: repo
+
+run:
+  path: sh
+  dir: repo
+  args:
+    - -c
+    - |
+      go mod download
+      go test -v ./...
+  
