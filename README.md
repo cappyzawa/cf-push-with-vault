@@ -2,6 +2,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/cappyzawa/cf-push-with-vault)](https://goreportcard.com/report/github.com/cappyzawa/cf-push-with-vault)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Build Status](https://concourse.ik.am:14161/api/v1/teams/cappyzawa/pipelines/cf-push-with-vault/jobs/test-master/badge)](https://concourse.ik.am:14161/teams/cappyzawa/pipelines/cf-push-with-vault)
+
 cf plugin to push cf app with vault
 
 # How to install
