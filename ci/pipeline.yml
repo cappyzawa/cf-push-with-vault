@@ -16,6 +16,7 @@ resources:
     type: git
     webhook_token: ((webhook-token))
     source:
+      branch: master
       uri: https://github.com/cappyzawa/cf-push-with-vault
   - name: version
     type: semver
