@@ -16,7 +16,7 @@ resources:
     type: git
     webhook_token: ((webhook-token))
     source:
-      uri: git@github.com:cappyzawa/cf-push-with-vault
+      uri: https://github.com/cappyzawa/cf-push-with-vault
   - name: version
     type: semver
     source:
@@ -69,11 +69,6 @@ jobs:
       - put: version
         params:
           bump: patch
-      - put: repo
-        params:
-          repository: repo
-          tag: version/version
-          tag_prefix: v
   - name: release
     build_logs_to_retain: 10
     plan:
@@ -82,6 +77,9 @@ jobs:
           passed:
             - test-master
         - get: version
+          passed:
+            - test-master
+          trigger: true
       - task: build
         file: repo/ci/tasks/build.yml
       - put: release
