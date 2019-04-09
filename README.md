@@ -5,8 +5,10 @@
 cf plugin to push cf app with vault
 
 # How to install
+Download from [Releases · cappyzawa/cf\-push\-with\-vault](https://github.com/cappyzawa/cf-push-with-vault/releases)
 ```
-$ cf install-plugin -f <binary>
+$ tar -zxvf cf-push-with-vault_*.tar.gz
+$ cf install-plugin -f ./cf-push-with-vault 
 ```
 
 # How to use
@@ -23,4 +25,30 @@ OPTIONS:
    --path-prefix       Path under which to namespace credential lookup
    --vault-addr        Address of the Vault server expressed as a URL and port, for example: https://127.0.0.1:8200/. (default: "VAULT_ADDR" env)
    --vault-token       Vault authentication token. (default: "VAULT_TOKEN" env)
+```
+
+## Examples 
+If you want to push cf app has follow manifest with vault.
+
+```yml
+---
+applications:
+- name: APP-ONE
+  path: ./APP-ONE-DIRECTORY
+  env:
+    foo: ((/foo/bar))
+```
+
+You must set `/foo/bar` to vault with `value` field. (inspired by [Credential lookup rules](https://concourse-ci.org/vault-credential-manager.html))
+
+```bash
+$ vault write /foo/bar value="cred"
+```
+
+_This plugin can only [KV Secrets Engine \- Version 1](https://www.vaultproject.io/docs/secrets/kv/kv-v1.html)_
+
+```bash
+$ export VAULT_ADDR=https://your.vault.address
+$ export VAULT_TOKEN=xxxxxxxxxxxx
+$ cf push-with-vault --path-prefix=/foo -f manifest.yml
 ```
