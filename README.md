@@ -37,7 +37,7 @@ applications:
 - name: APP-ONE
   path: ./APP-ONE-DIRECTORY
   env:
-    foo: ((/foo/bar))
+    bar: ((/foo/bar))
 ```
 
 You must set `/foo/bar` to vault with `value` field. (inspired by [Credential lookup rules](https://concourse-ci.org/vault-credential-manager.html))
