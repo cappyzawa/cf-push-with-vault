@@ -60,7 +60,7 @@ func (c *CfPushWithVault) Run(cliConnection plugin.CliConnection, args []string)
 		Variables:     variables,
 	}
 
-	if err := command.Push(fc.String("file")); err != nil {
+	if err := command.Push(fc.String("file"), fc.Args()[1:]); err != nil {
 		fmt.Fprintf(os.Stdout, "failed to push with vault: %v", err)
 		os.Exit(1)
 	}
@@ -73,14 +73,14 @@ func (c *CfPushWithVault) GetMetadata() plugin.PluginMetadata {
 		Version: plugin.VersionType{
 			Major: 0,
 			Minor: 0,
-			Build: 1,
+			Build: 2,
 		},
 		Commands: []plugin.Command{
 			{
 				Name:     "push-with-vault",
 				HelpText: "This enable to use (( )) place holders in manifest files. (( )) are evaluated by vault",
 				UsageDetails: plugin.Usage{
-					Usage: "$ cf push-with-vault",
+					Usage: "$ cf push-with-vault [APP_NAME]",
 					Options: map[string]string{
 						"-file":        "Path to manifest (default: ./manifest.yml)",
 						"-vault-addr":  "Address of the Vault server expressed as a URL and port, for example: https://127.0.0.1:8200/. (default: \"VAULT_ADDR\" env)",

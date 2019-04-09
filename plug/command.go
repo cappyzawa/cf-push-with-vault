@@ -18,7 +18,7 @@ type Command struct {
 }
 
 // Push pushes cf app based on manifest
-func (c *Command) Push(file string) error {
+func (c *Command) Push(file string, args []string) error {
 	// read file
 	absFile, err := filepath.Abs(file)
 	if err != nil {
@@ -42,8 +42,9 @@ func (c *Command) Push(file string) error {
 		return err
 	}
 
+	args = append([]string{"push", "-f", tmpFile.Name()}, args...)
 	// cf push
-	if _, err := c.CliConnection.CliCommand("push", "-f", tmpFile.Name()); err != nil {
+	if _, err := c.CliConnection.CliCommand(args...); err != nil {
 		return err
 	}
 

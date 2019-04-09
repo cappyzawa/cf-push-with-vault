@@ -28,13 +28,13 @@ var _ = Describe("Command", func() {
 	Describe("Push()", func() {
 		Context("manifest file is missing", func() {
 			It("an error is occurred", func() {
-				err := command.Push("../testdata/missing.yml")
+				err := command.Push("../testdata/missing.yml", []string{"testApp"})
 				Expect(err).To(HaveOccurred())
 			})
 		})
 		Context("manifest file does not contain parameters", func() {
 			It("access to the vault does not occur", func() {
-				err := command.Push("../testdata/no_contains_params.yml")
+				err := command.Push("../testdata/no_contains_params.yml", []string{"testApp"})
 				Expect(fakeVariables.GetCallCount()).To(BeZero())
 				Expect(err).NotTo(HaveOccurred())
 			})
@@ -45,7 +45,7 @@ var _ = Describe("Command", func() {
 				fakeVariables.GetReturns(nil, true, nil)
 			})
 			It("access to the vault occurs multiple times", func() {
-				err := command.Push("../testdata/multi_params.yml")
+				err := command.Push("../testdata/multi_params.yml", []string{"testApp"})
 				Expect(fakeVariables.GetCallCount()).To(Equal(2))
 				Expect(err).NotTo(HaveOccurred())
 			})
