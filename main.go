@@ -60,16 +60,18 @@ func (c *CfPushWithVault) Run(cliConnection plugin.CliConnection, args []string)
 		Variables:     variables,
 	}
 
-	pushArgs := []string{}
-	if fc.String("n") != "" {
-		pushArgs = append(pushArgs, "-n", fc.String("n"))
+	appName := ""
+	if len(fc.Args()) == 2 {
+		appName = fc.Args()[1]
 	}
-	if fc.String("d") != "" {
-		pushArgs = append(pushArgs, "-d", fc.String("d"))
+	pushArgs := plug.PushArgs{
+		AppName:      appName,
+		ManifestFile: fc.String("file"),
+		Hostname:     fc.String("hostname"),
+		Domain:       fc.String("domain"),
 	}
-	pushArgs = append(pushArgs, fc.Args()[1:]...)
 
-	if err := command.Push(fc.String("file"), pushArgs); err != nil {
+	if err := command.Push(pushArgs); err != nil {
 		fmt.Fprintf(os.Stdout, "failed to push with vault: %v", err)
 		os.Exit(1)
 	}
@@ -91,12 +93,12 @@ func (c *CfPushWithVault) GetMetadata() plugin.PluginMetadata {
 				UsageDetails: plugin.Usage{
 					Usage: "$ cf push-with-vault [APP_NAME]",
 					Options: map[string]string{
-						"-file":        "Path to manifest (default: ./manifest.yml)",
-						"-vault-addr":  "Address of the Vault server expressed as a URL and port, for example: https://127.0.0.1:8200/. (default: \"VAULT_ADDR\" env)",
-						"-vault-token": "Vault authentication token. (default: \"VAULT_TOKEN\" env)",
-						"-path-prefix": "Path under which to namespace credential lookup",
-						"-n":           "hostname",
-						"-d":           "domain",
+						"-file, -f":         "Path to manifest (default: ./manifest.yml)",
+						"-vault-addr, -va":  "Address of the Vault server expressed as a URL and port, for example: https://127.0.0.1:8200/. (default: \"VAULT_ADDR\" env)",
+						"-vault-token, -vt": "Vault authentication token. (default: \"VAULT_TOKEN\" env)",
+						"-path-prefix, -pp": "Path under which to namespace credential lookup",
+						"-hostname, -n":     "Hostname (e.g. my-subdomain)",
+						"-domain, -d":       "Specify a custom domain (e.g. private-domain.example.com, apps.internal.com) to use instead of the default domain",
 					},
 				},
 			},
@@ -110,8 +112,8 @@ func (c *CfPushWithVault) parseArgs(args []string) (flags.FlagContext, error) {
 	fc.NewStringFlagWithDefault("vault-addr", "va", "Address of the Vault server expressed as a URL and port", c.VaultAddr)
 	fc.NewStringFlagWithDefault("vault-token", "vt", "Vault authentication token", c.VaultToken)
 	fc.NewStringFlagWithDefault("path-prefix", "pp", "Path under which to namespace credential lookup", "")
-	fc.NewStringFlagWithDefault("n", "n", "hostname", "")
-	fc.NewStringFlagWithDefault("d", "d", "domain", "")
+	fc.NewStringFlagWithDefault("hostname", "n", "Hostname", "")
+	fc.NewStringFlagWithDefault("domain", "d", "Specify a custom domain", "")
 	err := fc.Parse(args...)
 	return fc, err
 }

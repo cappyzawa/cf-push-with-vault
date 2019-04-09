@@ -5,6 +5,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
+	"github.com/cappyzawa/cf-push-with-vault/plug"
 	. "github.com/cappyzawa/cf-push-with-vault/plug"
 	"github.com/cappyzawa/cf-push-with-vault/vault/vaultfakes"
 )
@@ -27,14 +28,22 @@ var _ = Describe("Command", func() {
 
 	Describe("Push()", func() {
 		Context("manifest file is missing", func() {
+			pArgs := plug.PushArgs{
+				AppName:      "testApp",
+				ManifestFile: "../testdata/missing.yml",
+			}
 			It("an error is occurred", func() {
-				err := command.Push("../testdata/missing.yml", []string{"testApp"})
+				err := command.Push(pArgs)
 				Expect(err).To(HaveOccurred())
 			})
 		})
 		Context("manifest file does not contain parameters", func() {
+			pArgs := plug.PushArgs{
+				AppName:      "testApp",
+				ManifestFile: "../testdata/no_contains_params.yml",
+			}
 			It("access to the vault does not occur", func() {
-				err := command.Push("../testdata/no_contains_params.yml", []string{"testApp"})
+				err := command.Push(pArgs)
 				Expect(fakeVariables.GetCallCount()).To(BeZero())
 				Expect(err).NotTo(HaveOccurred())
 			})
@@ -44,8 +53,12 @@ var _ = Describe("Command", func() {
 				fakeVariables.GetReturns(nil, true, nil)
 				fakeVariables.GetReturns(nil, true, nil)
 			})
+			pArgs := plug.PushArgs{
+				AppName:      "testApp",
+				ManifestFile: "../testdata/multi_params.yml",
+			}
 			It("access to the vault occurs multiple times", func() {
-				err := command.Push("../testdata/multi_params.yml", []string{"testApp"})
+				err := command.Push(pArgs)
 				Expect(fakeVariables.GetCallCount()).To(Equal(2))
 				Expect(err).NotTo(HaveOccurred())
 			})
