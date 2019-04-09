@@ -60,7 +60,16 @@ func (c *CfPushWithVault) Run(cliConnection plugin.CliConnection, args []string)
 		Variables:     variables,
 	}
 
-	if err := command.Push(fc.String("file"), fc.Args()[1:]); err != nil {
+	pushArgs := []string{}
+	if fc.String("n") != "" {
+		pushArgs = append(pushArgs, "-n", fc.String("n"))
+	}
+	if fc.String("d") != "" {
+		pushArgs = append(pushArgs, "-d", fc.String("d"))
+	}
+	pushArgs = append(pushArgs, fc.Args()[1:]...)
+
+	if err := command.Push(fc.String("file"), pushArgs); err != nil {
 		fmt.Fprintf(os.Stdout, "failed to push with vault: %v", err)
 		os.Exit(1)
 	}
@@ -86,6 +95,8 @@ func (c *CfPushWithVault) GetMetadata() plugin.PluginMetadata {
 						"-vault-addr":  "Address of the Vault server expressed as a URL and port, for example: https://127.0.0.1:8200/. (default: \"VAULT_ADDR\" env)",
 						"-vault-token": "Vault authentication token. (default: \"VAULT_TOKEN\" env)",
 						"-path-prefix": "Path under which to namespace credential lookup",
+						"-n":           "hostname",
+						"-d":           "domain",
 					},
 				},
 			},
@@ -99,6 +110,8 @@ func (c *CfPushWithVault) parseArgs(args []string) (flags.FlagContext, error) {
 	fc.NewStringFlagWithDefault("vault-addr", "va", "Address of the Vault server expressed as a URL and port", c.VaultAddr)
 	fc.NewStringFlagWithDefault("vault-token", "vt", "Vault authentication token", c.VaultToken)
 	fc.NewStringFlagWithDefault("path-prefix", "pp", "Path under which to namespace credential lookup", "")
+	fc.NewStringFlagWithDefault("n", "n", "hostname", "")
+	fc.NewStringFlagWithDefault("d", "d", "domain", "")
 	err := fc.Parse(args...)
 	return fc, err
 }
