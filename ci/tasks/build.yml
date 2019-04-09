@@ -1,0 +1,36 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: golang
+    tag: 1.11.4
+
+inputs:
+  - name: repo
+
+outputs:
+  - name: built
+
+run:
+  path: sh
+  dir: repo
+  args:
+    - -c
+    - |
+      set -ex
+      go mod download
+      PLUGIN_NAME=push-with-vault
+      GOOS=linux GOARCH=amd64 go build -o ../built/${PLUGIN_NAME}.linux64
+      GOOS=linux GOARCH=386 go build -o ../built/${PLUGIN_NAME}.linux32
+      GOOS=windows GOARCH=amd64 go build -o ../built/${PLUGIN_NAME}.win64
+      GOOS=windows GOARCH=386 go build -o ../built/${PLUGIN_NAME}.win32
+      GOOS=darwin GOARCH=amd64 go build -o ../built/${PLUGIN_NAME}.osx
+
+      cd ../built
+      shasum -a 1 ${PLUGIN_NAME}.linux64
+      shasum -a 1 ${PLUGIN_NAME}.linux32
+      shasum -a 1 ${PLUGIN_NAME}.win64
+      shasum -a 1 ${PLUGIN_NAME}.win32
+      shasum -a 1 ${PLUGIN_NAME}.osx

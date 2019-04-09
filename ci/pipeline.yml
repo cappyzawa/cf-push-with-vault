@@ -16,7 +16,23 @@ resources:
     type: git
     webhook_token: ((webhook-token))
     source:
-      uri: https://github.com/cappyzawa/cf-push-with-vault
+      uri: git@github.com:cappyzawa/cf-push-with-vault
+  - name: version
+    type: semver
+    source:
+      driver: git
+      uri: git@github.com:cappyzawa/cf-push-with-vault
+      branch: version
+      private_key: ((private-key))
+      commit_message: "[ci skip] bump version"
+      file: VERSION
+  - name: release
+    type: github-release
+    source:
+      owner: cappyzawa
+      repository: cf-push-with-vault
+      access_token: ((github-access-token))
+
 jobs:
   - name: test-pr
     build_logs_to_retain: 10
@@ -50,3 +66,26 @@ jobs:
         trigger: true
       - task: unit-test
         file: repo/ci/tasks/unit-test.yml
+      - put: version
+        params:
+          bump: patch
+      - put: repo
+        params:
+          repository: repo
+          tag: version/version
+  - name: release
+    build_logs_to_retain: 10
+    plan:
+      - aggregate:
+        - get: repo
+          passed:
+            - test-master
+        - get: version
+      - task: build
+        file: repo/ci/tasks/build.yml
+      - put: release
+        params:
+          name: version/version
+          tag: version/version
+          globs:
+            - built/push-with-vault*
