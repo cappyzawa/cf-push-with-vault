@@ -19,13 +19,15 @@ NAME:
    push-with-vault - This enable to use (( )) place holders in manifest files. (( )) are evaluated by vault
 
 USAGE:
-   $ cf push-with-vault
+   $ cf push-with-vault [APP_NAME]
 
 OPTIONS:
-   --file              Path to manifest (default: ./manifest.yml)
-   --path-prefix       Path under which to namespace credential lookup
-   --vault-addr        Address of the Vault server expressed as a URL and port, for example: https://127.0.0.1:8200/. (default: "VAULT_ADDR" env)
-   --vault-token       Vault authentication token. (default: "VAULT_TOKEN" env)
+   --domain, -d             Specify a custom domain (e.g. private-domain.example.com, apps.internal.com) to use instead of the default domain
+   --file, -f               Path to manifest (default: ./manifest.yml)
+   --hostname, -n           Hostname (e.g. my-subdomain)
+   --path-prefix, -pp       Path under which to namespace credential lookup
+   --vault-addr, -va        Address of the Vault server expressed as a URL and port, for example: https://127.0.0.1:8200/. (default: "VAULT_ADDR" env)
+   --vault-token, -vt       Vault authentication token. (default: "VAULT_TOKEN" env)
 ```
 
 ## Examples 

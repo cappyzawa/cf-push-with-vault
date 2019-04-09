@@ -84,7 +84,7 @@ func (c *CfPushWithVault) GetMetadata() plugin.PluginMetadata {
 		Version: plugin.VersionType{
 			Major: 0,
 			Minor: 0,
-			Build: 3,
+			Build: 4,
 		},
 		Commands: []plugin.Command{
 			{
