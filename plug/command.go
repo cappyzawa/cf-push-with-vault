@@ -17,10 +17,32 @@ type Command struct {
 	Variables     vault.Variables
 }
 
+// PushArgs is information for "cf push"
+type PushArgs struct {
+	AppName      string
+	ManifestFile string
+	Hostname     string
+	Domain       string
+}
+
+func (p *PushArgs) toStringArray() []string {
+	args := []string{"push"}
+	if p.AppName != "" {
+		args = append(args, p.AppName)
+	}
+	if p.Hostname != "" {
+		args = append(args, "-n", p.Hostname)
+	}
+	if p.Domain != "" {
+		args = append(args, "-d", p.Domain)
+	}
+	return append(args, "-f", p.ManifestFile)
+}
+
 // Push pushes cf app based on manifest
-func (c *Command) Push(file string, args []string) error {
+func (c *Command) Push(args PushArgs) error {
 	// read file
-	absFile, err := filepath.Abs(file)
+	absFile, err := filepath.Abs(args.ManifestFile)
 	if err != nil {
 		return err
 	}
@@ -41,10 +63,10 @@ func (c *Command) Push(file string, args []string) error {
 	if err != nil {
 		return err
 	}
+	args.ManifestFile = tmpFile.Name()
 
-	args = append([]string{"push", "-f", tmpFile.Name()}, args...)
 	// cf push
-	if _, err := c.CliConnection.CliCommand(args...); err != nil {
+	if _, err := c.CliConnection.CliCommand(args.toStringArray()...); err != nil {
 		return err
 	}
 
