@@ -5,14 +5,21 @@
 
 cf plugin to push cf app with vault
 
-# How to install
-Download from [Releases · cappyzawa/cf\-push\-with\-vault](https://github.com/cappyzawa/cf-push-with-vault/releases)
+## How to install
+### From [CF-Community](https://plugins.cloudfoundry.org/#push-with-vault)
+
+```bash
+$ cf install-plugin -r CF-Community "push-with-vault"
+```
+
+### From [GitHub Release](https://github.com/cappyzawa/cf-push-with-vault/releases)
+Download tar.gz file from release page.
 ```
 $ tar -zxvf cf-push-with-vault_*.tar.gz
 $ cf install-plugin -f ./cf-push-with-vault 
 ```
 
-# How to use
+## How to use
 ```
 $ cf push-with-vault -h
 NAME:
