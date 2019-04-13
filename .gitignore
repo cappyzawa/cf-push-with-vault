@@ -51,3 +51,4 @@ dist/*
 
 # ci
 ci/creds.yml
+ci/out/pipeline.yml
