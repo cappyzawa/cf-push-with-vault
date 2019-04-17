@@ -8,6 +8,7 @@ resource_types:
 resources:
   - name: pr
     type: pull-request
+    icon: source-pull
     webhook_token: ((webhook-token))
     source:
       repository: cappyzawa/cf-push-with-vault
@@ -15,11 +16,13 @@ resources:
   - name: repo
     type: git
     webhook_token: ((webhook-token))
+    icon: github-circle
     source:
       branch: master
       uri: https://github.com/cappyzawa/cf-push-with-vault
   - name: version
     type: semver
+    icon: tag
     source:
       driver: git
       uri: git@github.com:cappyzawa/cf-push-with-vault
@@ -29,6 +32,7 @@ resources:
       file: VERSION
   - name: release
     type: github-release
+    icon: package-variant-closed
     source:
       owner: cappyzawa
       repository: cf-push-with-vault
