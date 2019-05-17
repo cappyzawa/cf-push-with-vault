@@ -62,3 +62,12 @@ $ export VAULT_ADDR=https://your.vault.address
 $ export VAULT_TOKEN=xxxxxxxxxxxx
 $ cf push-with-vault --path-prefix=/foo -f manifest.yml
 ```
+
+This command has same effect as below.
+```bash
+$ export VAULT_ADDR=https://your.vault.address
+$ export VAULT_TOKEN=xxxxxxxxxxxx
+$ cf push -f manifest -v foo/bar = `vault read -field=value /foo/bar` 
+```
+If your cloudfoundry server version is old, this command is unavailable.  
+But this plugin is available because this parses manifest file and set credentials from vault.
